@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { db } from './database/knex'
+import { postsRouter } from './routers/postsRouter'
+
 
 const app = express()
 
@@ -11,21 +12,9 @@ app.listen(3003, () => {
     console.log(`Servidor rodando na porta ${3003}`)
 })
 
-app.get("/ping", async (req: Request, res: Response) => {
-    try {
-				const result = await db("users")
-        res.status(200).send({ message: "Pong!", result })
-    } catch (error) {
-        console.log(error)
+app.use("/posts", postsRouter)
 
-        if (req.statusCode === 200) {
-            res.status(500)
-        }
 
-        if (error instanceof Error) {
-            res.send(error.message)
-        } else {
-            res.send("Erro inesperado")
-        }
-    }
-})
+
+
+
