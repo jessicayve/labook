@@ -1,36 +1,95 @@
 import { Request, Response } from "express"
-import knex from "knex"
+import { PostBusiness } from "../business/PostBusiness"
+import { BaseError } from "../errors/BaseError"
 
 
 export class PostsController{
-    constructor(){}
+    constructor(
+        private postBusiness: PostBusiness
+    ){}
 
-    public getPosts = async(req: Request, res: Response)=>{
-try {
-    const db = knex({
-        client:"sqlite3",
-        connection:{
-            filename:"./src/databse/labook.db",
-        },
-        useNullAsDefault: true,
-        pool:{
-            min: 0,
-            max:1,
-            afterCreate: (conn: any, cb: any) => {
-                conn.run("PRAGMA foreign_keys = ON", cb)
+    public getPosts = async (req: Request, res: Response) => {
+        try {
+            const q = req.query.q as string | undefined
+    
+            const output = await this.postBusiness.getPosts(q)
+        
+            res.status(200).send(output)
+    
+        } catch (error) {
+            console.log(error)
+    
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.send("Erro inesperado")
             }
         }
-    })
-    const output = await db('posts').select()
-    res.status(200).send(output)
-
-} catch (error) {
-    console.log(error)
-    if(error instanceof Error){
-        res.status(500).send(error.message)
-    }else{
-        res.status(500).send("Erro inesperado")
     }
-}
-}
+
+    public createPost = async (req: Request, res: Response) => {
+        try {
+    
+            const input = {
+                id: req.body.id,
+                creatorId: req.body.creatorId,
+                content: req.body.content
+            }
+
+            const output = await this.postBusiness.createPost(input)
+           
+            res.status(201).send(output)
+
+        } catch (error) {
+            console.log(error)
+    
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.send("Erro inesperado")
+            }
+        }
+    }
+
+    public editPost = async (req: Request, res: Response) => {
+        try {
+            
+            const input = {
+                idToEdit: req.params.id,
+                content: req.body.content
+            }
+            
+            const output = await this.postBusiness.editPost(input)
+    
+                res.status(201).send(output)            
+
+        } catch (error) {
+            console.log(error)
+    
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.send("Erro inesperado")
+            }
+        }
+    }
+
+    public deletePost = async (req: Request, res: Response) => {
+        try {
+            const id = req.params.id
+    
+            const output = await this.postBusiness.deletePost(id)
+            console.log(output)
+            res.status(200).send(output)
+    
+        } catch (error) {
+            console.log(error)
+    
+            if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else {
+                res.send("Erro inesperado")
+            }
+        }
+    }
 }
