@@ -4,7 +4,7 @@ export class Post{
         private creator_id: string,
         private content: string,
         private likes: number,
-        private dislakes: number,
+        private dislikes: number,
         private created_at: string,
         private updated_at: string
     ){}
@@ -38,11 +38,11 @@ export class Post{
     }
 
     getDislikesPost(): number{
-        return this.dislakes
+        return this.dislikes
     }
 
     setDislikesPost(value: number): void{
-        this.dislakes = value
+        this.dislikes = value
     }
 
     getCreatedAtPost(): string{
