@@ -88,7 +88,7 @@ export class PostDTO {
         if (typeof idToEdit !== "string") throw new BadRequestError("'id' deve ser string")
 
 
-        if (typeof content !== "string") throw new BadRequestError("'post' deve ser string")
+        if (typeof content !== "string") throw new BadRequestError("'title' deve ser string")
 
         const dto = {
             idToEdit,

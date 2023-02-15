@@ -1,4 +1,4 @@
-import { PostsDatabase } from "../database/PostsDataBase"
+import { PostsDatabase } from "../database/PostDatabase"
 import { CreatePostInputDTO, EditPostInputDTO, PostDTO } from "../dto/PostDTO"
 import { BadRequestError } from "../error/BadRequestError"
 import { NotFoundError } from "../error/NotFoundError"
@@ -25,6 +25,7 @@ export class PostBusiness {
             postDB.updated_at
         ))
 
+       
 
         return posts
     }
@@ -37,12 +38,13 @@ export class PostBusiness {
         const postDBExist = await this.postsDatabase.findPostById(id)
 
         if (postDBExist) {
-            throw new BadRequestError("'id' ja existente")
+            throw new BadRequestError("'id' já existe")
         }
 
         let newLikes = 0
         let newDislikes = 0
 
+      
         const newPost = new Post(
             id,
             creatorId,
@@ -53,6 +55,7 @@ export class PostBusiness {
             new Date().toISOString()
         )
 
+      
         const newPostDB: TPostsDB = {
             id: newPost.getIdPost(),
             creator_id: newPost.getCreatorIdPost(),
