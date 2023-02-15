@@ -44,5 +44,5 @@ export interface UserModel {
     email: string,
     password: string,
     role: string,
-    createdAt: string
+    created_at: string
 }

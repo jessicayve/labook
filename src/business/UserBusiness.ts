@@ -3,21 +3,40 @@ import { GetUsersInput, GetUsersOutput, LoginInput, LoginOutput, SignupInput, Si
 import { BadRequestError } from "../error/BadRequestError";
 import { NotFoundError } from "../error/NotFoundError";
 import { User } from "../models/User";
-
-
+import { HashManager } from "../services/HashManage";
+import { IdGenerator } from "../services/IdGenerator";
+import { TokenManager, TokenPayload } from "../services/TokenManager";
 import { USER_ROLES } from "../types";
 
 export class UserBusiness {
     constructor(
         private usersDatabase: UsersDatabase,
-       
+        private idGenerator: IdGenerator,
+        private tokenManager: TokenManager,
+        private hashManager: HashManager
     ) {}
 
     public getUsers = async (input: GetUsersInput): Promise<GetUsersOutput> => {
-        const { q } = input
+        const { q, token } = input
 
         if (typeof q !== "string" && q !== undefined) {
             throw new BadRequestError("'q' deve ser string ou undefined")
+        }
+
+        if(typeof token !== "string" ){
+            throw new BadRequestError("token vazio")
+        }
+
+        // verifica se o token é válido
+        const payload = this.tokenManager.getPayload(token)
+
+
+        if(payload === null){
+            throw new BadRequestError("token não é válido")
+        }
+
+        if(payload.role !== USER_ROLES.ADMIN){
+            throw new BadRequestError("Precisa ser ADMIN")
         }
 
         const usersDB = await this.usersDatabase.findUsers(q)
@@ -55,20 +74,33 @@ export class UserBusiness {
             throw new BadRequestError("'password' deve ser string")
         }
 
-        
+        const id = this.idGenerator.generate()
+
+        const passwordHash = await this.hashManager.hash(password)
 
         const newUser = new User(
             id,
             name,
             email,
-            password,
-            USER_ROLES.NORMAL, 
+            passwordHash,
+            USER_ROLES.NORMAL, // só é possível criar users com contas normais
             new Date().toISOString()
         )
 
         const newUserDB = newUser.toDBModel()
         await this.usersDatabase.insertUser(newUserDB)
 
+        const tokenPayload: TokenPayload = {
+            id: newUser.getIdUser(),
+            name: newUser.getNameUser(),
+            role: newUser.getRoleUser()
+        }
+        const token = this.tokenManager.createToken(tokenPayload)
+
+        const output: SignupOutput = {
+            message: "Cadastro realizado com sucesso",
+            token: token
+        }
 
         return output
     }
@@ -90,10 +122,25 @@ export class UserBusiness {
             throw new NotFoundError("'email' não encontrado")
         }
 
-        if (password !== userDB.password) {
-            throw new BadRequestError("'email' ou 'password' incorretos")
+        const passwordHash = this.hashManager.compare(password, userDB.password)
+        
+        if(!passwordHash){
+            throw new BadRequestError("'email' ou 'password' incorreto")
         }
 
+        const tokenPayload: TokenPayload = {
+                id: userDB.id,
+                name: userDB.name,
+                role: userDB.role
+        }
+
+        const token = this.tokenManager.createToken(tokenPayload)
+
+
+        const output: LoginOutput = {
+            message: "Login realizado com sucesso",
+            token: token
+        }
 
         return output
     }

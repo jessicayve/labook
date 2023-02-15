@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
 import { PostBusiness } from "../business/PostBusiness"
-import { BaseError } from "../errors/BaseError"
+import { BaseError } from "../error/BaseError"
 
 
-export class PostsController{
+export class PostController{
     constructor(
         private postBusiness: PostBusiness
     ){}

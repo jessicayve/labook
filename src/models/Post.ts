@@ -13,6 +13,14 @@ export class Post{
         return this.id
     }
 
+    getCreatorIdPost(): string{
+        return this.creator_id
+    }
+
+    setCreatorIdPost(value: string): void{
+        this.creator_id = value
+    }
+
     getContentPost(): string{
         return this.content
     }
@@ -52,13 +60,4 @@ export class Post{
     setUpdatedAtPost(value: string): void{
         this.updated_at = value
     }
-
-    getCreatorIdPost(): string{
-        return this.creator_id
-    }
-
-    setCreatorIdPost(value: string): void{
-        this.creator_id = value
-    }
-  
 }

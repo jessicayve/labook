@@ -1,11 +1,11 @@
 import express from 'express'
 import { PostBusiness } from '../business/PostBusiness'
-import { PostsController } from '../controller/PostsController'
-import { PostsDatabase } from '../database/PostsDataBase'
+import { PostController } from '../controller/PostsController'
+import { PostsDatabase } from '../database/PostDatabase'
 
 export const postRouter = express.Router()
 
-const postController = new PostsController(
+const postController = new PostController(
     new PostBusiness(
         new PostsDatabase
     )

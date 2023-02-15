@@ -1,13 +1,13 @@
 import { TUsersDB } from "../types"
 
 export interface GetUsersInput {
-    q: unknown
+    q: unknown,
+    token: string | undefined
 }
 
 export type GetUsersOutput = TUsersDB[]
 
 export interface SignupInput {
-    id: unknown,
     name: unknown,
     email: unknown,
     password: unknown
