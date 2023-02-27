@@ -1,4 +1,4 @@
-import { TUsersDB, UserModel, USER_ROLES } from "../types"
+import { UserDB, UserModel, USER_ROLES } from "../types"
 
 export class User {
     constructor (
@@ -10,51 +10,51 @@ export class User {
         private createdAt: string
     ) {}
 
-    getIdUser(): string {
+    public getId(): string {
         return this.id
     }
 
-    getNameUser(): string{
+    public getName(): string{
         return this.name
     }
 
-    setNameUser(value: string): void{
+    public setName(value: string): void{
         this.name = value
     }
 
-    getEmailUser(): string{
+    public getEmail(): string{
         return this.email
     }
 
-    setEmailUser(value: string): void{
+    public setEmail(value: string): void{
         this.email = value
     }
 
-    getPasswordUser(): string{
+    public getPassword(): string{
         return this.password
     }
 
-    setPasswordUser(value: string): void{
+    public setPassword(value: string): void{
         this.password = value
     }
 
-    getRoleUser(): USER_ROLES{
+    public getRole(): USER_ROLES{
         return this.role
     }
 
-    setRoleUser(value: USER_ROLES): void{
+    public setRole(value: USER_ROLES): void{
         this.role = value
     }
 
-    getCreatedAtUser(): string {
+    public getCreatedAt(): string {
         return this.createdAt
     }
 
-    setCreatedAtUser(value: string){
+    public setCreatedAt(value: string){
         this.createdAt = value
     }
 
-    public toDBModel(): TUsersDB {
+    public toDBModel(): UserDB {
         return {
             id: this.id,
             name: this.name,
@@ -72,7 +72,7 @@ export class User {
             email: this.email,
             password: this.password,
             role: this.role,
-            created_at: this.createdAt
+            createdAt: this.createdAt
         }
     }
     
