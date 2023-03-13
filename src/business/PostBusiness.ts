@@ -115,7 +115,7 @@ export class PostBusiness {
         }
 
         if (token === null) {
-            throw new BadRequestError("'token' deve ser informado")
+            throw new BadRequestError("'token' ausente")
         }
 
         const postDB = await this.postsDatabase.findPostById(idToEdit)
