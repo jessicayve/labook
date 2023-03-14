@@ -1,25 +1,23 @@
-import { Request, Response } from "express"
-import { PostBusiness } from "../business/PostBusiness"
-import { LikesDislikesInputDTO } from "../dtos/LikesDislikesDTO"
-import { DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO } from "../dtos/PostDTO"
-import { BaseError } from "../errors/BaseError"
-
+import { Request, Response } from "express";
+import { PostBusiness } from "../business/PostBusiness";
+import { LikesDislikesInputDTO } from "../dtos/LikesDislikesDTO";
+import { CreatePostInputDTO, DeletePostInputDTO, EditPostInputDTO, GetPostInputDTO } from "../dtos/PostDTO";
+import { BaseError } from "../errors/BaseError";
 
 export class PostController {
     constructor(
         private postBusiness: PostBusiness
     ) { }
 
-    public getPosts = async (req: Request, res: Response) => {
+    public getPost = async (req: Request, res: Response) => {
         try {
-
             const input: GetPostInputDTO = {
                 token: req.headers.authorization
             }
 
-            const output = await this.postBusiness.getPosts(input)
-
+            const output = await this.postBusiness.getPost(input)
             res.status(200).send(output)
+
 
         } catch (error) {
             console.log(error)
@@ -31,17 +29,16 @@ export class PostController {
         }
     }
 
-    public createPost = async (req: Request, res: Response) => {
-        try {
+     public createPost = async (req: Request, res: Response) => {
+       try{
+        
+        const input: CreatePostInputDTO = {
+            token: req.headers.authorization,
+            content: req.body.content
+        }
+       await this.postBusiness.createPost(input)
 
-            const input = {
-                content: req.body.content,
-                tokenUser: req.headers.authorization
-            }
-
-            await this.postBusiness.createPost(input)
-
-            res.status(201).end()
+        res.status(201).end()
 
         } catch (error) {
             console.log(error)
@@ -67,7 +64,7 @@ export class PostController {
             res.status(200).end()
 
         } catch (error) {
-            console.log(error)
+           
             if (error instanceof BaseError) {
                 res.status(error.statusCode).send(error.message)
             } else {
@@ -96,7 +93,6 @@ export class PostController {
             }
         }
     }
-
     public likeOrDislikePost = async (req: Request, res: Response) => {
         try {
 
