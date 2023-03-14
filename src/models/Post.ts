@@ -93,7 +93,7 @@ export class Post{
             id: this.id,
             creator_id: this.creatorId,
             content: this.content,
-            likes: this.likes,
+            likes: this.likes,  
             dislikes: this.dislikes,
             created_at: this.createdAt,
             updated_at: this.updatedAt
